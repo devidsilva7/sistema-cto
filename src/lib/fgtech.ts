@@ -181,7 +181,9 @@ export function parseKml(text: string): Omit<PontoImportado, "situacao" | "motiv
   doc.querySelectorAll("Placemark").forEach((pm, i) => {
     const coords = pm.querySelector("Point coordinates")?.textContent?.trim();
     if (!coords) return;
-    const [lng, lat] = coords.split(/[\s,]+/).map(Number);
+    const partes = coords.split(/[\s,]+/).map(Number);
+    const lng = partes[0] ?? NaN;
+    const lat = partes[1] ?? NaN;
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
     const nome = pm.querySelector("name")?.textContent?.trim() || `CTO-IMP-${i + 1}`;
     const desc = pm.querySelector("description")?.textContent ?? "";

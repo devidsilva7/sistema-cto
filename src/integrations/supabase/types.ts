@@ -14,16 +14,211 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ctos: {
+        Row: {
+          ativa: boolean
+          bairro: string
+          codigo: string
+          created_at: string
+          id: string
+          lat: number
+          lng: number
+          portas_ocupadas: number
+          portas_total: number
+        }
+        Insert: {
+          ativa?: boolean
+          bairro?: string
+          codigo: string
+          created_at?: string
+          id?: string
+          lat: number
+          lng: number
+          portas_ocupadas?: number
+          portas_total?: number
+        }
+        Update: {
+          ativa?: boolean
+          bairro?: string
+          codigo?: string
+          created_at?: string
+          id?: string
+          lat?: number
+          lng?: number
+          portas_ocupadas?: number
+          portas_total?: number
+        }
+        Relationships: []
+      }
+      historico: {
+        Row: {
+          acao: string
+          created_at: string
+          cto_codigo: string
+          cto_id: string | null
+          descricao: string | null
+          id: string
+          servico_id: string | null
+          tarefa_id: string | null
+          tecnico: string
+        }
+        Insert: {
+          acao: string
+          created_at?: string
+          cto_codigo: string
+          cto_id?: string | null
+          descricao?: string | null
+          id?: string
+          servico_id?: string | null
+          tarefa_id?: string | null
+          tecnico: string
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          cto_codigo?: string
+          cto_id?: string | null
+          descricao?: string | null
+          id?: string
+          servico_id?: string | null
+          tarefa_id?: string | null
+          tecnico?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_cto_id_fkey"
+            columns: ["cto_id"]
+            isOneToOne: false
+            referencedRelation: "ctos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_tarefa_id_fkey"
+            columns: ["tarefa_id"]
+            isOneToOne: false
+            referencedRelation: "tarefas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          nome?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      tarefas: {
+        Row: {
+          cliente: string
+          created_at: string
+          cto_id: string
+          data: string
+          endereco: string
+          horario: string
+          id: string
+          problema: boolean
+          servico_id: string
+          status: string
+          tecnico: string
+          tipo: string
+        }
+        Insert: {
+          cliente: string
+          created_at?: string
+          cto_id: string
+          data?: string
+          endereco?: string
+          horario?: string
+          id?: string
+          problema?: boolean
+          servico_id?: string
+          status?: string
+          tecnico: string
+          tipo: string
+        }
+        Update: {
+          cliente?: string
+          created_at?: string
+          cto_id?: string
+          data?: string
+          endereco?: string
+          horario?: string
+          id?: string
+          problema?: boolean
+          servico_id?: string
+          status?: string
+          tecnico?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tarefas_cto_id_fkey"
+            columns: ["cto_id"]
+            isOneToOne: false
+            referencedRelation: "ctos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      alternar_cto: { Args: { _cto: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      registrar_servico: {
+        Args: {
+          _descricao: string
+          _portas: number
+          _status: string
+          _tarefa: string
+        }
+        Returns: undefined
+      }
+      reportar_problema: {
+        Args: { _descricao: string; _tarefa: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "ti" | "tecnico"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +345,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["ti", "tecnico"],
+    },
   },
 } as const

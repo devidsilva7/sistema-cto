@@ -1,11 +1,15 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { LogOut } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { TaskCard } from "@/components/TaskCard";
-import { ctosQuery, meQuery, saudacao, dataExtenso, tarefasQuery, STATUS_LABEL } from "@/lib/fgtech";
+import {
+  ctosQuery,
+  meQuery,
+  saudacao,
+  dataExtenso,
+  tarefasQuery,
+  STATUS_LABEL,
+} from "@/lib/fgtech";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard · FGTECH CTO Maps" }] }),
@@ -13,7 +17,6 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function Dashboard() {
-  const navigate = useNavigate();
   const me = useQuery(meQuery);
   const tarefas = useQuery(tarefasQuery);
   const ctos = useQuery(ctosQuery);
@@ -22,22 +25,11 @@ function Dashboard() {
 
   return (
     <div className="mx-auto max-w-6xl p-4 md:p-8">
-      <header className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold">
-            {saudacao()}, {me.data?.nome ?? ""}
-          </h1>
-          <p className="text-sm text-muted-foreground">{dataExtenso()}</p>
-        </div>
-        <Button
-          variant="outline"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            navigate({ to: "/auth", replace: true });
-          }}
-        >
-          <LogOut /> Sair
-        </Button>
+      <header>
+        <h1 className="text-2xl font-extrabold">
+          {saudacao()}, {me.data?.nome ?? ""}
+        </h1>
+        <p className="text-sm text-muted-foreground">{dataExtenso()}</p>
       </header>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {(["pendente", "andamento", "concluida"] as const).map((s) => (
@@ -46,7 +38,12 @@ function Dashboard() {
             {(tarefas.data ?? [])
               .filter((t) => t.status === s)
               .map((t) => (
-                <TaskCard key={t.id} t={t} cto={ctoById.get(t.cto_id)} onClick={() => setSel(t.id)} />
+                <TaskCard
+                  key={t.id}
+                  t={t}
+                  cto={ctoById.get(t.cto_id)}
+                  onClick={() => setSel(t.id)}
+                />
               ))}
           </section>
         ))}

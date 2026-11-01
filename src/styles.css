@@ -186,3 +186,11 @@
   background: var(--info); border: 3px solid var(--foreground);
   box-shadow: 0 0 0 8px color-mix(in oklab, var(--info) 30%, transparent);
 }
+.cto-pin--unknown { background: var(--secondary); color: var(--foreground); }
+.ref-pin {
+  width: 22px; height: 22px; border-radius: 999px 999px 999px 0;
+  transform: rotate(-45deg); transform-origin: center;
+  background: var(--info); border: 3px solid var(--foreground);
+  box-shadow: 0 6px 14px -4px oklch(0 0 0 / 70%);
+}
+.leaflet-container.picking { cursor: crosshair; }

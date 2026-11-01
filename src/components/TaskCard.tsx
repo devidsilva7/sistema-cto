@@ -9,7 +9,15 @@ const BORDA = {
   normal: "border-l-border",
 } as const;
 
-export function TaskCard({ t, cto, onClick }: { t: Tarefa; cto?: Cto; onClick: () => void }) {
+export function TaskCard({
+  t,
+  cto,
+  onClick,
+}: {
+  t: Tarefa;
+  cto?: Cto | undefined;
+  onClick: () => void;
+}) {
   const u = urgencia(t);
   return (
     <button
@@ -20,7 +28,10 @@ export function TaskCard({ t, cto, onClick }: { t: Tarefa; cto?: Cto; onClick: (
       )}
     >
       <div className="flex items-start gap-3">
-        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-xs font-bold" title={t.tecnico}>
+        <span
+          className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-xs font-bold"
+          title={t.tecnico}
+        >
           {iniciais(t.tecnico)}
         </span>
         <div className="min-w-0 flex-1">

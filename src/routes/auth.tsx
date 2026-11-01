@@ -86,7 +86,7 @@ function AuthPage() {
       setErro("E-mail ou senha incorretos. Confira os dados e tente novamente.");
       return;
     }
-    navigate({ to: "/dashboard", replace: true });
+    navigate({ to: "/mapa", replace: true });
   }
 
   return (

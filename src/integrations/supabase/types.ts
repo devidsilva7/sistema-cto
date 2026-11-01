@@ -20,69 +20,105 @@ export type Database = {
           bairro: string
           codigo: string
           created_at: string
+          endereco: string | null
           id: string
           lat: number
           lng: number
-          portas_ocupadas: number
-          portas_total: number
+          nome: string | null
+          observacoes: string | null
+          origem: string
+          portas_atualizadas_em: string | null
+          portas_atualizadas_por: string | null
+          portas_ocupadas: number | null
+          portas_total: number | null
+          ref_externa: string | null
+          updated_at: string
         }
         Insert: {
           ativa?: boolean
           bairro?: string
           codigo: string
           created_at?: string
+          endereco?: string | null
           id?: string
           lat: number
           lng: number
-          portas_ocupadas?: number
-          portas_total?: number
+          nome?: string | null
+          observacoes?: string | null
+          origem?: string
+          portas_atualizadas_em?: string | null
+          portas_atualizadas_por?: string | null
+          portas_ocupadas?: number | null
+          portas_total?: number | null
+          ref_externa?: string | null
+          updated_at?: string
         }
         Update: {
           ativa?: boolean
           bairro?: string
           codigo?: string
           created_at?: string
+          endereco?: string | null
           id?: string
           lat?: number
           lng?: number
-          portas_ocupadas?: number
-          portas_total?: number
+          nome?: string | null
+          observacoes?: string | null
+          origem?: string
+          portas_atualizadas_em?: string | null
+          portas_atualizadas_por?: string | null
+          portas_ocupadas?: number | null
+          portas_total?: number | null
+          ref_externa?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
       historico: {
         Row: {
           acao: string
+          categoria: string
           created_at: string
           cto_codigo: string
           cto_id: string | null
           descricao: string | null
           id: string
+          portas_ocupadas_obs: number | null
+          portas_utilizadas: string | null
           servico_id: string | null
           tarefa_id: string | null
           tecnico: string
+          usuario_id: string | null
         }
         Insert: {
           acao: string
+          categoria?: string
           created_at?: string
           cto_codigo: string
           cto_id?: string | null
           descricao?: string | null
           id?: string
+          portas_ocupadas_obs?: number | null
+          portas_utilizadas?: string | null
           servico_id?: string | null
           tarefa_id?: string | null
           tecnico: string
+          usuario_id?: string | null
         }
         Update: {
           acao?: string
+          categoria?: string
           created_at?: string
           cto_codigo?: string
           cto_id?: string | null
           descricao?: string | null
           id?: string
+          portas_ocupadas_obs?: number | null
+          portas_utilizadas?: string | null
           servico_id?: string | null
           tarefa_id?: string | null
           tecnico?: string
+          usuario_id?: string | null
         }
         Relationships: [
           {
@@ -104,16 +140,19 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          email: string | null
           id: string
           nome: string
         }
         Insert: {
           created_at?: string
+          email?: string | null
           id: string
           nome?: string
         }
         Update: {
           created_at?: string
+          email?: string | null
           id?: string
           nome?: string
         }
@@ -203,6 +242,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      nome_usuario_atual: { Args: never; Returns: string }
       registrar_servico: {
         Args: {
           _descricao: string
@@ -211,6 +251,16 @@ export type Database = {
           _tarefa: string
         }
         Returns: undefined
+      }
+      registrar_servico_cto: {
+        Args: {
+          _cto: string
+          _descricao: string
+          _portas_ocupadas_obs: number | null
+          _portas_utilizadas: string | null
+          _servico: string
+        }
+        Returns: string
       }
       reportar_problema: {
         Args: { _descricao: string; _tarefa: string }

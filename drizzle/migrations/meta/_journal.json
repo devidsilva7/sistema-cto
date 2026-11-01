@@ -8,6 +8,13 @@
       "when": 1793413526260,
       "tag": "0000_fgtech_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793570400000,
+      "tag": "0001_cto_registros",
+      "breakpoints": true
     }
   ]
 }

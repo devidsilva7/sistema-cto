@@ -87,7 +87,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-[1000] flex h-14 items-center justify-between border-b bg-background/90 px-4 backdrop-blur md:hidden">
           <img src="/logocto.png" alt="FGTECH" className="h-7 w-auto" width={1280} height={277} />
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">{me.data?.nome}</span>
+            <span className="hidden max-w-32 truncate text-xs text-muted-foreground sm:block">
+              {me.data?.nome}
+            </span>
             <button
               onClick={sair}
               className="grid size-11 place-items-center rounded-xl text-muted-foreground hover:bg-secondary"

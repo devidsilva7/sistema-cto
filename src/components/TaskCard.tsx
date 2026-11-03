@@ -37,17 +37,22 @@ export function TaskCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <p className="truncate font-bold">{t.tipo}</p>
-            <span className="text-xs font-semibold text-muted-foreground">{t.servico_id}</span>
+            <span className="max-w-[35%] shrink-0 truncate text-right text-xs font-semibold text-muted-foreground">
+              {t.servico_id}
+            </span>
           </div>
-          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span className="font-semibold text-primary-soft">{cto?.codigo ?? "—"}</span>
+          <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+            <span className="max-w-[45%] truncate font-semibold text-primary-soft">
+              {cto?.codigo ?? "—"}
+            </span>
             <Clock className="size-3.5" aria-hidden /> {hora(t.horario)}
           </p>
         </div>
       </div>
       <p className="mt-3 text-sm font-semibold">{t.cliente}</p>
-      <p className="mt-0.5 flex items-start gap-1.5 text-xs text-muted-foreground">
-        <MapPin className="mt-px size-3.5 shrink-0" aria-hidden /> {t.endereco}
+      <p className="mt-0.5 flex min-w-0 items-start gap-1.5 text-xs text-muted-foreground">
+        <MapPin className="mt-px size-3.5 shrink-0" aria-hidden />
+        <span className="min-w-0 break-words">{t.endereco}</span>
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <span

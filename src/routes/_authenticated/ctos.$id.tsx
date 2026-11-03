@@ -74,7 +74,9 @@ function CtoPage() {
       <div className="mx-auto max-w-md p-6 text-center">
         <p className="font-bold">CTO não encontrada.</p>
         <Button asChild className="mt-4">
-          <Link to="/mapa">Voltar ao mapa</Link>
+          <Link to="/mapa" search={{ criticas: false }}>
+            Voltar ao mapa
+          </Link>
         </Button>
       </div>
     );
@@ -112,6 +114,7 @@ function CtoPage() {
     <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
       <Link
         to="/mapa"
+        search={{ criticas: false }}
         className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" /> Mapa
@@ -229,7 +232,7 @@ function CtoPage() {
       </div>
 
       <Dialog open={editando} onOpenChange={setEditando}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+        <DialogContent className="app-theme-portal max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Editar {cto.codigo}</DialogTitle>
           </DialogHeader>

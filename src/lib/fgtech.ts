@@ -68,6 +68,20 @@ export const historicoQuery = queryOptions({
   },
 });
 
+export const historicoTarefaQuery = (tarefaId: string) =>
+  queryOptions({
+    queryKey: ["historico", "tarefa", tarefaId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("historico")
+        .select("*")
+        .eq("tarefa_id", tarefaId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
 export const historicoCtoQuery = (ctoId: string) =>
   queryOptions({
     queryKey: ["historico", "cto", ctoId],

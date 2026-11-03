@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { ChevronRight, Crosshair, Loader2, MapPin, Navigation, Search, X } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { CtoMap } from "@/components/CtoMap";
 import { PortasBadge } from "@/components/CtoPortas";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,9 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/mapa")({
+  validateSearch: z.object({
+    criticas: z.union([z.boolean(), z.literal("true"), z.literal("false")]).optional(),
+  }),
   head: () => ({ meta: [{ title: "Mapa de CTOs · FGTECH CTO Maps" }] }),
   component: MapaPage,
 });
@@ -30,6 +34,8 @@ type Referencia = { lat: number; lng: number; label: string; tipo: "gps" | "ende
 
 function MapaPage() {
   const ctos = useQuery(ctosQuery);
+  const search = Route.useSearch();
+  const filtroCriticas = search.criticas === true || search.criticas === "true";
   const [termo, setTermo] = useState("");
   const [ref, setRef] = useState<Referencia | null>(null);
   const [enderecos, setEnderecos] = useState<ResultadoEndereco[] | null>(null);
@@ -43,6 +49,15 @@ function MapaPage() {
   const ativas = useMemo(
     () => todas.filter((c) => c.ativa && (!soLivres || ["boa", "baixa"].includes(capacidade(c)))),
     [todas, soLivres],
+  );
+  const ctosNoMapa = useMemo(
+    () =>
+      filtroCriticas
+        ? todas.filter((c) => c.ativa && ["baixa", "lotada"].includes(capacidade(c)))
+        : soLivres
+          ? ativas
+          : todas,
+    [ativas, filtroCriticas, soLivres, todas],
   );
   const sel = todas.find((c) => c.id === selId) ?? null;
 
@@ -104,12 +119,20 @@ function MapaPage() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col md:h-dvh md:flex-row">
+    <div className="flex min-h-0 flex-1 flex-col md:h-[70dvh] md:min-h-[30rem] md:flex-row">
       <section className="order-2 flex flex-col gap-3 p-4 md:order-1 md:w-[24rem] md:shrink-0 md:overflow-y-auto md:border-r">
         <form onSubmit={pesquisarEndereco} role="search" className="flex flex-col gap-2">
           <label htmlFor="busca" className="text-sm font-semibold">
             Buscar CTO ou endereço
           </label>
+          {filtroCriticas && (
+            <p className="rounded-xl bg-primary/10 p-3 text-sm text-primary">
+              Exibindo CTOs ativas com poucas portas ou lotadas.
+              <Link to="/mapa" search={{ criticas: false }} className="ml-1 font-bold underline">
+                Limpar filtro
+              </Link>
+            </p>
+          )}
           <div className="relative">
             <Search
               className="absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
@@ -228,14 +251,14 @@ function MapaPage() {
         <Legenda />
       </section>
 
-      <div className="order-1 h-[52dvh] min-h-56 shrink-0 md:order-2 md:h-auto md:min-h-0 md:flex-1">
+      <div className="order-1 h-[38dvh] min-h-56 shrink-0 md:order-2 md:h-full md:min-h-0 md:flex-1">
         {ctos.isLoading ? (
           <div className="grid h-full place-items-center text-muted-foreground">
             <Loader2 className="size-6 animate-spin" />
           </div>
         ) : (
           <CtoMap
-            ctos={soLivres ? ativas : todas}
+            ctos={ctosNoMapa}
             selectedId={selId}
             onSelect={selecionar}
             userPos={ref?.tipo === "gps" ? ref : null}

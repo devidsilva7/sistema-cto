@@ -13,18 +13,25 @@ export function TaskCard({
   t,
   cto,
   onClick,
+  onDoubleClick,
+  compact = false,
 }: {
   t: Tarefa;
   cto?: Cto | undefined;
   onClick: () => void;
+  onDoubleClick?: () => void;
+  compact?: boolean;
 }) {
   const u = urgencia(t);
+  const concluida = t.status === "concluida";
   return (
     <button
       onClick={onClick}
+      onDoubleClick={onDoubleClick}
       className={cn(
         "surface w-full border-l-4 p-4 text-left transition-colors hover:bg-secondary",
         BORDA[u],
+        compact && "p-3",
       )}
     >
       <div className="flex items-start gap-3">
@@ -36,12 +43,36 @@ export function TaskCard({
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate font-bold">{t.tipo}</p>
-            <span className="max-w-[35%] shrink-0 truncate text-right text-xs font-semibold text-muted-foreground">
+            <div className="min-w-0">
+              <p className={cn("truncate font-bold", concluida && "line-through")}>
+                {t.titulo || t.tipo}
+              </p>
+              {t.titulo && t.titulo !== t.tipo && (
+                <p
+                  className={cn(
+                    "truncate text-xs text-muted-foreground",
+                    concluida && "line-through",
+                  )}
+                >
+                  {t.tipo}
+                </p>
+              )}
+            </div>
+            <span
+              className={cn(
+                "max-w-[35%] shrink-0 truncate text-right text-xs font-semibold text-muted-foreground",
+                concluida && "line-through",
+              )}
+            >
               {t.servico_id}
             </span>
           </div>
-          <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+          <p
+            className={cn(
+              "mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground",
+              concluida && "line-through",
+            )}
+          >
             <span className="max-w-[45%] truncate font-semibold text-primary-soft">
               {cto?.codigo ?? "—"}
             </span>
@@ -49,11 +80,30 @@ export function TaskCard({
           </p>
         </div>
       </div>
-      <p className="mt-3 text-sm font-semibold">{t.cliente}</p>
-      <p className="mt-0.5 flex min-w-0 items-start gap-1.5 text-xs text-muted-foreground">
-        <MapPin className="mt-px size-3.5 shrink-0" aria-hidden />
-        <span className="min-w-0 break-words">{t.endereco}</span>
-      </p>
+      {!compact && (
+        <p className={cn("mt-3 text-sm font-semibold", concluida && "line-through")}>{t.cliente}</p>
+      )}
+      {!compact && (
+        <p
+          className={cn(
+            "mt-0.5 flex min-w-0 items-start gap-1.5 text-xs text-muted-foreground",
+            concluida && "line-through",
+          )}
+        >
+          <MapPin className="mt-px size-3.5 shrink-0" aria-hidden />
+          <span className="min-w-0 break-words">{t.endereco}</span>
+        </p>
+      )}
+      {compact && (
+        <p
+          className={cn(
+            "mt-2 line-clamp-2 text-xs text-muted-foreground",
+            concluida && "line-through",
+          )}
+        >
+          {t.descricao_problema || t.endereco || t.cliente}
+        </p>
+      )}
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <span
           className={cn(
@@ -69,6 +119,11 @@ export function TaskCard({
         {t.problema && (
           <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-primary-foreground">
             <AlertTriangle className="size-3.5" aria-hidden /> Problema
+          </span>
+        )}
+        {t.prioridade === "critica" && (
+          <span className="rounded-full bg-danger/15 px-2.5 py-1 text-xs font-bold text-danger">
+            Crítica
           </span>
         )}
       </div>

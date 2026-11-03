@@ -1,11 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 import { ChevronRight, Loader2, Lock, Plus, Search } from "lucide-react";
 import { CtoForm } from "@/components/CtoForm";
 import { PortasBadge } from "@/components/CtoPortas";
 import { ImportarKmz } from "@/components/gestao/ImportarKmz";
-import { Usuarios } from "@/components/gestao/Usuarios";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,12 +13,25 @@ import { capacidade, ctosQuery, filtrarCtos, meQuery, portasDesatualizadas } fro
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/gestao")({
-  head: () => ({ meta: [{ title: "Gestão TI · FGTECH CTO Maps" }] }),
+  validateSearch: z.object({
+    nova: z.union([z.boolean(), z.literal("true"), z.literal("false")]).optional(),
+  }),
+  head: () => ({ meta: [{ title: "Cadastrar CTO · FGTECH CTO Maps" }] }),
   component: GestaoPage,
 });
 
 function GestaoPage() {
   const me = useQuery(meQuery);
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/gestao" });
+  const [aba, setAba] = useState("ctos");
+
+  useEffect(() => {
+    if (search.nova !== true && search.nova !== "true") return;
+    setAba("ctos");
+    void navigate({ search: { nova: false }, replace: true });
+  }, [navigate, search.nova]);
+
   if (me.isLoading) return <Loader2 className="m-8 size-6 animate-spin text-muted-foreground" />;
   if (me.data?.perfil !== "ti") {
     return (
@@ -30,24 +43,20 @@ function GestaoPage() {
   }
   return (
     <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
-      <h1 className="text-2xl font-extrabold">Gestão TI</h1>
+      <h1 className="text-2xl font-extrabold">Cadastrar CTO</h1>
       <p className="text-sm text-muted-foreground">
-        Cadastro de CTOs, importação do KMZ e usuários.
+        Cadastre CTOs manualmente ou importe locais a partir de um arquivo KMZ.
       </p>
-      <Tabs defaultValue="ctos" className="mt-4">
+      <Tabs value={aba} onValueChange={setAba} className="mt-4">
         <TabsList className="w-full sm:w-auto">
-          <TabsTrigger value="ctos">CTOs</TabsTrigger>
+          <TabsTrigger value="ctos">Cadastro manual</TabsTrigger>
           <TabsTrigger value="kmz">Importar KMZ</TabsTrigger>
-          <TabsTrigger value="usuarios">Usuários</TabsTrigger>
         </TabsList>
         <TabsContent value="ctos">
-          <ListaGestao />
+          <ListaGestao novaInicial={search.nova === true || search.nova === "true"} />
         </TabsContent>
         <TabsContent value="kmz">
           <ImportarKmz />
-        </TabsContent>
-        <TabsContent value="usuarios">
-          <Usuarios meuId={me.data.id} />
         </TabsContent>
       </Tabs>
     </div>
@@ -63,11 +72,11 @@ const FILTROS = [
   { id: "todas", label: "Todas" },
 ] as const;
 
-function ListaGestao() {
+function ListaGestao({ novaInicial = false }: { novaInicial?: boolean }) {
   const ctos = useQuery(ctosQuery);
   const [termo, setTermo] = useState("");
   const [filtro, setFiltro] = useState<(typeof FILTROS)[number]["id"]>("ativas");
-  const [nova, setNova] = useState(false);
+  const [nova, setNova] = useState(novaInicial);
   const todas = useMemo(() => ctos.data ?? [], [ctos.data]);
 
   const contagem = useMemo(() => {
@@ -181,7 +190,7 @@ function ListaGestao() {
       )}
 
       <Dialog open={nova} onOpenChange={setNova}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+        <DialogContent className="app-theme-portal max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Nova CTO</DialogTitle>
           </DialogHeader>

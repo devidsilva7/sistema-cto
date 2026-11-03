@@ -15,6 +15,7 @@ const FILTROS = [
   { id: "todos", label: "Todos" },
   { id: "servico", label: "Serviços" },
   { id: "problema", label: "Problemas" },
+  { id: "tarefas", label: "Tarefas" },
   { id: "ti", label: "Alterações da TI" },
 ] as const;
 
@@ -30,7 +31,8 @@ function HistoricoPage() {
     return (hist.data ?? []).filter((h) => {
       if (filtro === "servico" && h.categoria !== "servico") return false;
       if (filtro === "problema" && h.categoria !== "problema") return false;
-      if (filtro === "ti" && !["cadastro", "alteracao", "status"].includes(h.categoria))
+      if (filtro === "tarefas" && !["tarefa", "status"].includes(h.categoria)) return false;
+      if (filtro === "ti" && !["cadastro", "alteracao"].includes(h.categoria))
         return false;
       if (!q) return true;
       return normalizar(

@@ -60,7 +60,7 @@ export function TaskCard({
             </div>
             <span
               className={cn(
-                "text-xs font-semibold text-muted-foreground",
+                "max-w-[35%] shrink-0 truncate text-right text-xs font-semibold text-muted-foreground",
                 concluida && "line-through",
               )}
             >
@@ -69,11 +69,13 @@ export function TaskCard({
           </div>
           <p
             className={cn(
-              "mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground",
+              "mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground",
               concluida && "line-through",
             )}
           >
-            <span className="font-semibold text-primary-soft">{cto?.codigo ?? "—"}</span>
+            <span className="max-w-[45%] truncate font-semibold text-primary-soft">
+              {cto?.codigo ?? "—"}
+            </span>
             <Clock className="size-3.5" aria-hidden /> {hora(t.horario)}
           </p>
         </div>
@@ -84,11 +86,12 @@ export function TaskCard({
       {!compact && (
         <p
           className={cn(
-            "mt-0.5 flex items-start gap-1.5 text-xs text-muted-foreground",
+            "mt-0.5 flex min-w-0 items-start gap-1.5 text-xs text-muted-foreground",
             concluida && "line-through",
           )}
         >
-          <MapPin className="mt-px size-3.5 shrink-0" aria-hidden /> {t.endereco}
+          <MapPin className="mt-px size-3.5 shrink-0" aria-hidden />
+          <span className="min-w-0 break-words">{t.endereco}</span>
         </p>
       )}
       {compact && (

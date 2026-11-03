@@ -251,7 +251,7 @@ function MapaPage() {
         <Legenda />
       </section>
 
-      <div className="order-1 h-[35dvh] shrink-0 md:order-2 md:h-full md:flex-1">
+      <div className="order-1 h-[38dvh] min-h-56 shrink-0 md:order-2 md:h-full md:min-h-0 md:flex-1">
         {ctos.isLoading ? (
           <div className="grid h-full place-items-center text-muted-foreground">
             <Loader2 className="size-6 animate-spin" />

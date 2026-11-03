@@ -130,7 +130,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               onToggle={() => setTheme(theme === "light" ? "dark" : "light")}
               compact
             />
-            <span className="text-xs text-muted-foreground">{me.data?.nome}</span>
+            <span className="hidden max-w-32 truncate text-xs text-muted-foreground sm:block">
+              {me.data?.nome}
+            </span>
             <Sheet>
               <SheetTrigger asChild>
                 <button
